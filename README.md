@@ -10,10 +10,10 @@ EchoCLIP is a multimodal foundation model for echocardiography. It is finetuned 
 This repo contains example code for loading and using EchoCLIP and its long-context variant, EchoCLIP-R. To get started, clone this repo and navigate into it. Then, create a new `conda` environment and install the required packages:
 
 ```
-git clone https://github.com/echonet/echo_clip
-cd echo_clip
-conda env create -n echo_clip
-conda activate echo_clip
+git clone https://github.com/echonet/echo_CLIP
+cd echo_CLIP
+conda env create -n echo-clip
+conda activate echo-clip
 python -m pip install -r requirements.txt
 ```
 You should now be able to run `embedding_example.py` and `zero_shot_example.py`.

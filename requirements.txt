@@ -1,0 +1,4 @@
+open_clip_torch
+huggingface_hub
+tokenizers
+opencv-python-headless

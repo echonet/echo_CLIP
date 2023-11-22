@@ -29,6 +29,7 @@ test_video = read_avi(
 test_video = torch.stack(
     [preprocess_val(T.ToPILImage()(frame)) for frame in test_video], dim=0
 )
+test_video = test_video[0:min(40, len(test_video)):2]
 test_video = test_video.cuda()
 test_video = test_video.to(torch.bfloat16)
 

@@ -1,4 +1,11 @@
-open_clip_torch
-huggingface_hub
-tokenizers
-opencv-python-headless
+pytorch==2.0.1
+torchvision==0.15.2
+open_clip_torch==2.20.0
+huggingface_hub==0.16.4
+tokenizers==0.13.3
+opencv-python-headless==4.8.0.76
+numpy==1.24.4
+matplotplib==3.8
+Pillow==10.0.0
+scipy==1.12
+timm==0.9.5

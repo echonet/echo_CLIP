@@ -2,7 +2,7 @@
 
 EchoCLIP is a multimodal foundation model for echocardiography. It is finetuned from CLIP weights on a dataset of >1M pairs of echocardiogram images and their associated expert interpretation text. It can be used for semantic search amongst echo videos as well as zero-shot prediction on a wide range of clinically relevant tasks. For more details, see our paper:
 
-(link will be added once preprint is released)
+[https://www.nature.com/articles/s41591-024-02959-y](https://www.nature.com/articles/s41591-024-02959-y)
 <!-- [Multimodal Foundation Models For Echocardiogram Interpretation](https://arxiv.org/abs/) -->
 
 ## Quickstart

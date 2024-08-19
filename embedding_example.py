@@ -4,7 +4,13 @@ import torchvision.transforms as T
 import torch
 import torch.nn.functional as F
 from utils import read_avi
+from argparse import ArgumentParser
 
+parser = ArgumentParser()
+parser.add_argument("--vid", type=str, default="example_video.avi")
+parser.add_argument("--report", type=str, default="example_report.txt")
+
+args = parser.parse_args()
 # You'll need to log in to the HuggingFace hub CLI to download the models
 # You can do this with the terminal command "huggingface-cli login"
 # You'll be asked to paste your HuggingFace API token, which you can find at https://huggingface.co/settings/token
@@ -20,7 +26,7 @@ echo_clip_r, _, preprocess_val = create_model_and_transforms(
 
 # We'll load a sample echo video and preprocess its frames.
 test_video = read_avi(
-    "example_video.avi",
+    args.vid,
     (224, 224),
 )
 test_video = torch.stack(
@@ -39,7 +45,7 @@ test_video_embedding = test_video_embedding.mean(dim=0, keepdim=True)
 
 # We'll now load an excerpt of the report associated with our echo
 # and tokenize it using the template tokenizer.
-with open("example_report.txt", "r") as f:
+with open(args.report, "r") as f:
     test_report = f.read()
 
 template_tokens = template_tokenize(test_report)

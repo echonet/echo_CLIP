@@ -133,7 +133,7 @@ def crop_and_scale(img, res=(640, 480), interpolation=cv2.INTER_CUBIC, zoom=0.1)
     return img
 
 
-def read_avi(p: Path, res=None):
+def read_avi(p: Path, res=None) -> np.ndarray:
     cap = cv2.VideoCapture(str(p))
     frames = []
     while True:
@@ -260,7 +260,7 @@ def extract_variables(string, replace_with="<#>"):
     variables = []
     for match in matches:
         for variable in match:
-            if not len(variable) == 0:
+            if variable:
                 variables.append(variable)
     variables_replaced = select_variable.sub(replace_with, string)
     return variables, variables_replaced

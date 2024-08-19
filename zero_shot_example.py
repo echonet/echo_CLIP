@@ -8,6 +8,13 @@ from utils import (
     compute_regression_metric,
     read_avi,
 )
+from argparse import ArgumentParser
+
+parser = ArgumentParser()
+parser.add_argument("--vid", type=str, default="example_video.avi")
+parser.add_argument("--report", type=str, default="example_report.txt")
+
+args = parser.parse_args()
 
 # You'll need to log in to the HuggingFace hub CLI to download the models
 # You can do this with the terminal command "huggingface-cli login"
@@ -23,7 +30,7 @@ echo_clip, _, preprocess_val = create_model_and_transforms(
 # We'll use random noise in the shape of a 10-frame video in this example, but you can use any image
 # We'll load a sample echo video and preprocess its frames.
 test_video = read_avi(
-    "example_video.avi",
+    args.vid,
     (224, 224),
 )
 test_video = torch.stack(
@@ -40,12 +47,12 @@ test_video_embedding = F.normalize(echo_clip.encode_image(test_video), dim=-1)
 # Add in a batch dimension because the zero-shot functions expect one
 test_video_embedding = test_video_embedding.unsqueeze(0)
 
-
 # To perform zero-shot prediction on our "echo" image, we'll need
 # prompts that describe the task we want to perform. For example,
 # to zero-shot detect pacemakers, we'll use the following prompts
 pacemaker_prompts = zero_shot_prompts["pacemaker"]
-print(pacemaker_prompts)
+print("pacemaker prompt:", pacemaker_prompts)
+# Using two prompts to make similarity is working good!
 
 # We'll use the CLIP BPE tokenizer to tokenize the prompts
 pacemaker_prompts = tokenize(pacemaker_prompts).cuda()
@@ -55,7 +62,7 @@ print(pacemaker_prompts)
 pacemaker_prompt_embeddings = F.normalize(
     echo_clip.encode_text(pacemaker_prompts), dim=-1
 )
-print(pacemaker_prompt_embeddings.shape)
+print("pacemaker prompt shape:", pacemaker_prompt_embeddings.shape)
 
 # Now we can compute the similarity between the video and the prompts
 # to get a prediction for whether the video contains a pacemaker. It's
@@ -68,14 +75,15 @@ pacemaker_predictions = compute_binary_metric(
 # If we use a pacemaker detection threshold calibrated using its F1 score on
 # our test set, we can get a proper true/false prediction prediction.
 f1_calibrated_threshold = 0.298
-print(f"Pacemaker detected: {pacemaker_predictions.item() > f1_calibrated_threshold}")
-
+print(
+    f"Pacemaker detected: {pacemaker_predictions.item() > f1_calibrated_threshold},"
+    f" with value: {pacemaker_predictions.item()}")
 
 # We can also do the same thing for predicting continuous values,
 # like ejection fraction. We'll use the following prompts for
 # zero-shot ejection fraction prediction:
 ejection_fraction_prompts = zero_shot_prompts["ejection_fraction"]
-print(ejection_fraction_prompts)
+print("ejection_fraction prompts:", ejection_fraction_prompts)
 
 # However, since ejection fraction can range between 0 and 100,
 # we'll need to make 100 versions of each prompt.
@@ -98,6 +106,6 @@ ejection_fraction_embeddings = F.normalize(
 # And we'll compute the similarity between the image and the prompts
 # to get a prediction for the ejection fraction.
 ejection_fraction_predictions = compute_regression_metric(
-    test_video_embedding, ejection_fraction_embeddings, prompt_values
+    test_video_embedding, ejection_fraction_embeddings, torch.tensor(prompt_values)
 )
 print(f"Predicted ejection fraction is {ejection_fraction_predictions.item():.1f}%")
